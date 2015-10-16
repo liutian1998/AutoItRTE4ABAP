@@ -18,9 +18,11 @@
 
     ; Prompt the user to run the script - use a Yes/No prompt with the
     ; flag parameter set at 4 (see the help file for more details)
-    Local $iAnswer = MsgBox(BitOR($MB_YESNO, $MB_SYSTEMMODAL), "AutoIt Example (English Only)", "This script will open an input box and get you to type in some text.  Do you want to run it?")
+    Local $iAnswer = MsgBox(BitOR($MB_YESNO, $MB_SYSTEMMODAL), _
+      "AutoIt Example (English Only)", "This script will open an " & _
+      "input box and get you to type in some text.  Do you want to run it?")
 
-    ; Check the user's answer to the prompt (see the help file for 
+    ; Check the user's answer to the prompt (see the help file for
     ; MsgBox return values)
     ; If "No" was clicked (7) then exit the script
     If $iAnswer = 7 Then
@@ -29,24 +31,31 @@
     EndIf
 
     ; Loop around until the user gives a valid "autoit" answer. This is
-    ; not case-sensitive, therefore AutoIt and AuToIT are acceptable values as well
+    ; not case-sensitive, therefore AutoIt and AuToIT are acceptable
+    ; values as well
     Local $iLoop = 1, $sText = ""
     While $iLoop = 1
-      $sText = InputBox("AutoIt Example", "Please type in the word ""autoit"" and click OK")
+      $sText = InputBox("AutoIt Example", _
+        "Please type in the word ""autoit"" and click OK")
       If @error = 1 Then
         MsgBox($MB_SYSTEMMODAL, "Error", "You pressed 'Cancel' - try again!")
       Else
         ; They clicked OK, but did they type the right thing?
-        If $sText <> "autoit" Then ; This is not case-sensitive, therefore AutoIt and AuToIT are acceptable values as well
-          MsgBox($MB_SYSTEMMODAL, "Error", "You typed in the wrong thing - try again!")
+        ; This is not case-sensitive, therefore AutoIt and AuToIT are
+        ; acceptable values as well
+        If $sText <> "autoit" Then
+          MsgBox($MB_SYSTEMMODAL, "Error", _
+            "You typed in the wrong thing - try again!")
         Else
-          $iLoop = 0 ; Exit the loop - ExitLoop would have been an alternative too
+          ; Exit the loop - ExitLoop would have been an alternative too
+          $iLoop = 0
         EndIf
       EndIf
     Wend
 
     ; Print the success message
-    MsgBox($MB_SYSTEMMODAL, "AutoIt Example", "You typed in the correct word!  Congrats.")
+    MsgBox($MB_SYSTEMMODAL, "AutoIt Example", _
+      "You typed in the correct word!  Congrats.")
 
     ; Finished!
 
