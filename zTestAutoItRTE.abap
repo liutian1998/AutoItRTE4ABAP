@@ -8,7 +8,6 @@
       Data lv_Str Type String.
 
     "-Main--------------------------------------------------------------
-
       Try.
 
         "-Copy AutoIt3 runtime environemnt------------------------------
