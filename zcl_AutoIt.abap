@@ -6,48 +6,61 @@ Class ZCL_AUTOIT Definition Public.
   Public Section.
 
     Methods ProvideRTE
-      Importing i_DeleteExistRTE Type ABAP_BOOL.
+      Importing i_DeleteExistRTE Type ABAP_BOOL
+      Exceptions Error.
 
-    Methods DeleteExistingRTE.
+    Methods DeleteExistingRTE
+      Exceptions Error.
 
     Methods GetWorkDir
-      Returning Value(r_WorkDir) Type String.
+      Returning Value(r_WorkDir) Type String
+      Exceptions Error.
 
     Methods ReadInclAsString
       Importing i_InclName Type SOBJ_NAME
-      Returning Value(r_strIncl) Type String.
+      Returning Value(r_strIncl) Type String
+      Exceptions Error.
 
     Methods StoreInclAsFile
       Importing i_InclName Type SOBJ_NAME i_FileName Type String
-      Returning Value(r_FileLength) Type i.
+      Returning Value(r_FileLength) Type i
+      Exceptions Error.
 
     Methods Execute
-      Importing i_FileName Type String i_WorkDir Type String.
+      Importing i_FileName Type String i_WorkDir Type String
+      Exceptions Error.
 
     Methods GetClipBoard
-      Returning Value(r_ClipData) Type String.
+      Returning Value(r_ClipData) Type String
+      Exceptions Error.
 
     Methods PutClipBoard
       Importing i_ClipData Type String
-      Returning Value(r_Success) Type i.
+      Returning Value(r_Success) Type i
+      Exceptions Error.
 
     Methods ReadFile
       Importing i_FileName Type String
-      Returning Value(r_FileData) Type String.
+      Returning Value(r_FileData) Type String
+      Exceptions Error.
 
     Methods WriteFile
       Importing i_FileName Type String i_FileData Type String
-      Returning Value(r_FileLength) Type i.
+      Returning Value(r_FileLength) Type i
+      Exceptions Error.
 
     Methods AppendFile
       Importing i_FileName Type String i_FileData Type String
-      Returning Value(r_FileLength) Type i.
+      Returning Value(r_FileLength) Type i
+      Exceptions Error.
 
     Methods DeleteFile
       Importing i_FileName Type String
-      Returning Value(r_Success) Type i.
+      Returning Value(r_Success) Type i
+      Exceptions Error.
 
-    Methods Flush.
+    Methods Flush
+      Exceptions Error.
 
 EndClass.
 
@@ -87,7 +100,20 @@ Class ZCL_AUTOIT Implementation.
           DEFAULT_DIRECTORY = lv_WorkDir
           SYNCHRONOUS = 'X'
         Exceptions
-          Others = 1.
+          CNTL_ERROR = 1
+          ERROR_NO_GUI = 2
+          BAD_PARAMETER = 3
+          FILE_NOT_FOUND = 4
+          PATH_NOT_FOUND = 5
+          FILE_EXTENSION_UNKNOWN = 6
+          ERROR_EXECUTE_FAILED  = 7
+          SYNCHRONOUS_FAILED = 8
+          NOT_SUPPORTED_BY_GUI = 9
+          Others = 10.
+
+      If sy-subrc <> 0.
+        Raise Error.
+      EndIf.
 
     "-Delete Include.rar archive----------------------------------------
       Call Method cl_gui_frontend_services=>file_delete
@@ -96,7 +122,19 @@ Class ZCL_AUTOIT Implementation.
         Changing
           RC = lv_RC
         Exceptions
-          Others = 1.
+          FILE_DELETE_FAILED = 1
+          CNTL_ERROR = 2
+          ERROR_NO_GUI = 3
+          FILE_NOT_FOUND = 4
+          ACCESS_DENIED = 5
+          UNKNOWN_ERROR = 6
+          NOT_SUPPORTED_BY_GUI = 7
+          WRONG_PARAMETER = 8
+          Others = 9.
+
+      If sy-subrc <> 0.
+        Raise Error.
+      EndIf.
 
     "-Delete AutoIt code------------------------------------------------
       Call Method cl_gui_frontend_services=>file_delete
@@ -105,7 +143,19 @@ Class ZCL_AUTOIT Implementation.
         Changing
           RC = lv_RC
         Exceptions
-          Others = 1.
+          FILE_DELETE_FAILED = 1
+          CNTL_ERROR = 2
+          ERROR_NO_GUI = 3
+          FILE_NOT_FOUND = 4
+          ACCESS_DENIED = 5
+          UNKNOWN_ERROR = 6
+          NOT_SUPPORTED_BY_GUI = 7
+          WRONG_PARAMETER = 8
+          Others = 9.
+
+      If sy-subrc <> 0.
+        Raise Error.
+      EndIf.
 
     "-Delete unrar.dll library------------------------------------------
       Call Method cl_gui_frontend_services=>file_delete
@@ -114,7 +164,19 @@ Class ZCL_AUTOIT Implementation.
         Changing
           RC = lv_RC
         Exceptions
-          Others = 1.
+          FILE_DELETE_FAILED = 1
+          CNTL_ERROR = 2
+          ERROR_NO_GUI = 3
+          FILE_NOT_FOUND = 4
+          ACCESS_DENIED = 5
+          UNKNOWN_ERROR = 6
+          NOT_SUPPORTED_BY_GUI = 7
+          WRONG_PARAMETER = 8
+          Others = 9.
+
+      If sy-subrc <> 0.
+        Raise Error.
+      EndIf.
 
   EndMethod.
 
@@ -137,7 +199,15 @@ Class ZCL_AUTOIT Implementation.
         Receiving
           RESULT = lv_Result
         Exceptions
-          Others = 1.
+          CNTL_ERROR = 1
+          ERROR_NO_GUI = 2
+          WRONG_PARAMETER = 3
+          NOT_SUPPORTED_BY_GUI = 4
+          Others = 5.
+
+      If sy-subrc <> 0.
+        Raise Error.
+      EndIf.
 
       If lv_Result = ABAP_TRUE.
 
@@ -148,7 +218,15 @@ Class ZCL_AUTOIT Implementation.
             Receiving
               RESULT = lv_Result
             Exceptions
-              Others = 1.
+              CNTL_ERROR = 1
+              ERROR_NO_GUI = 2
+              WRONG_PARAMETER = 3
+              NOT_SUPPORTED_BY_GUI = 4
+              Others = 5.
+
+          If sy-subrc <> 0.
+            Raise Error.
+          EndIf.
 
           If lv_Result = ABAP_TRUE.
 
@@ -164,7 +242,34 @@ Class ZCL_AUTOIT Implementation.
                 Changing
                   DATA_TAB = lt_FileData
                 Exceptions
-                  Others = 1.
+                  FILE_WRITE_ERROR = 1
+                  NO_BATCH = 2
+                  GUI_REFUSE_FILETRANSFER = 3
+                  INVALID_TYPE = 4
+                  NO_AUTHORITY = 5
+                  UNKNOWN_ERROR = 6
+                  HEADER_NOT_ALLOWED = 7
+                  SEPARATOR_NOT_ALLOWED = 8
+                  FILESIZE_NOT_ALLOWED = 9
+                  HEADER_TOO_LONG = 10
+                  DP_ERROR_CREATE = 11
+                  DP_ERROR_SEND = 12
+                  DP_ERROR_WRITE = 13
+                  UNKNOWN_DP_ERROR = 14
+                  ACCESS_DENIED = 15
+                  DP_OUT_OF_MEMORY = 16
+                  DISK_FULL = 17
+                  DP_TIMEOUT = 18
+                  FILE_NOT_FOUND = 19
+                  DATAPROVIDER_EXCEPTION = 20
+                  CONTROL_FLUSH_ERROR = 21
+                  NOT_SUPPORTED_BY_GUI = 22
+                  ERROR_NO_GUI = 23
+                  Others = 24.
+
+              If sy-subrc <> 0.
+                Raise Error.
+              EndIf.
 
             "-Execute AutoIt to delete the Include directory------------
               Call Method cl_gui_frontend_services=>execute
@@ -174,7 +279,20 @@ Class ZCL_AUTOIT Implementation.
                   DEFAULT_DIRECTORY = lv_WorkDir
                   SYNCHRONOUS = 'X'
                 Exceptions
-                  Others = 1.
+                  CNTL_ERROR = 1
+                  ERROR_NO_GUI = 2
+                  BAD_PARAMETER = 3
+                  FILE_NOT_FOUND = 4
+                  PATH_NOT_FOUND = 5
+                  FILE_EXTENSION_UNKNOWN = 6
+                  ERROR_EXECUTE_FAILED  = 7
+                  SYNCHRONOUS_FAILED = 8
+                  NOT_SUPPORTED_BY_GUI = 9
+                  Others = 10.
+
+              If sy-subrc <> 0.
+                Raise Error.
+              EndIf.
 
             "-Delete AutoIt code----------------------------------------
               Call Method cl_gui_frontend_services=>file_delete
@@ -183,7 +301,19 @@ Class ZCL_AUTOIT Implementation.
                 Changing
                   RC = lv_RC
                 Exceptions
-                  Others = 1.
+                  FILE_DELETE_FAILED = 1
+                  CNTL_ERROR = 2
+                  ERROR_NO_GUI = 3
+                  FILE_NOT_FOUND = 4
+                  ACCESS_DENIED = 5
+                  UNKNOWN_ERROR = 6
+                  NOT_SUPPORTED_BY_GUI = 7
+                  WRONG_PARAMETER = 8
+                  Others = 9.
+
+              If sy-subrc <> 0.
+                Raise Error.
+              EndIf.
 
           EndIf.
 
@@ -194,7 +324,19 @@ Class ZCL_AUTOIT Implementation.
             Changing
               RC = lv_RC
             Exceptions
-              Others = 1.
+              FILE_DELETE_FAILED = 1
+              CNTL_ERROR = 2
+              ERROR_NO_GUI = 3
+              FILE_NOT_FOUND = 4
+              ACCESS_DENIED = 5
+              UNKNOWN_ERROR = 6
+              NOT_SUPPORTED_BY_GUI = 7
+              WRONG_PARAMETER = 8
+              Others = 9.
+
+          If sy-subrc <> 0.
+            Raise Error.
+          EndIf.
 
       EndIf.
 
@@ -212,7 +354,15 @@ Class ZCL_AUTOIT Implementation.
       Changing
         SAPWORKDIR = lv_WorkDir
       Exceptions
-        Others = 1.
+        GET_SAPWORKDIR_FAILED = 1
+        CNTL_ERROR = 2
+        ERROR_NO_GUI = 3
+        NOT_SUPPORTED_BY_GUI  = 4
+        Others = 5.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
     If lv_WorkDir Is Initial.
       Create Object lo_SAPGUI 'Sapgui.InfoCtrl.1'.
@@ -247,6 +397,8 @@ Class ZCL_AUTOIT Implementation.
           lv_InclLine = ''.
         EndLoop.
       EndIf.
+    Else.
+      Raise Error.
     EndIf.
     r_strIncl = lv_retIncl.
 
@@ -272,7 +424,34 @@ Class ZCL_AUTOIT Implementation.
       Changing
         DATA_TAB = lt_FileData
       Exceptions
-        Others = 1.
+        FILE_WRITE_ERROR = 1
+        NO_BATCH = 2
+        GUI_REFUSE_FILETRANSFER = 3
+        INVALID_TYPE = 4
+        NO_AUTHORITY = 5
+        UNKNOWN_ERROR = 6
+        HEADER_NOT_ALLOWED = 7
+        SEPARATOR_NOT_ALLOWED = 8
+        FILESIZE_NOT_ALLOWED = 9
+        HEADER_TOO_LONG = 10
+        DP_ERROR_CREATE = 11
+        DP_ERROR_SEND = 12
+        DP_ERROR_WRITE = 13
+        UNKNOWN_DP_ERROR = 14
+        ACCESS_DENIED = 15
+        DP_OUT_OF_MEMORY = 16
+        DISK_FULL = 17
+        DP_TIMEOUT = 18
+        FILE_NOT_FOUND = 19
+        DATAPROVIDER_EXCEPTION = 20
+        CONTROL_FLUSH_ERROR = 21
+        NOT_SUPPORTED_BY_GUI = 22
+        ERROR_NO_GUI = 23
+        Others = 24.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
@@ -286,7 +465,20 @@ Class ZCL_AUTOIT Implementation.
         DEFAULT_DIRECTORY = i_WorkDir
         SYNCHRONOUS = 'X'
       Exceptions
-        Others = 1.
+        CNTL_ERROR = 1
+        ERROR_NO_GUI = 2
+        BAD_PARAMETER = 3
+        FILE_NOT_FOUND = 4
+        PATH_NOT_FOUND = 5
+        FILE_EXTENSION_UNKNOWN = 6
+        ERROR_EXECUTE_FAILED  = 7
+        SYNCHRONOUS_FAILED = 8
+        NOT_SUPPORTED_BY_GUI = 9
+        Others = 10.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
@@ -306,7 +498,14 @@ Class ZCL_AUTOIT Implementation.
       Importing
         DATA = lt_ClipData
       Exceptions
-        Others = 1.
+        CNTL_ERROR = 1
+        ERROR_NO_GUI = 2
+        NOT_SUPPORTED_BY_GUI = 3
+        Others = 4.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
     lv_Lines = Lines( lt_ClipData ).
     Loop At lt_ClipData Into lv_Str.
@@ -338,7 +537,15 @@ Class ZCL_AUTOIT Implementation.
       Changing
         RC = r_Success
       Exceptions
-        Others = 1.
+        CNTL_ERROR = 1
+        ERROR_NO_GUI = 2
+        NOT_SUPPORTED_BY_GUI = 3
+        NO_AUTHORITY = 4
+        Others = 5.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
@@ -357,7 +564,29 @@ Class ZCL_AUTOIT Implementation.
       Changing
         DATA_TAB = lt_FileData
       Exceptions
-        Others = 1.
+        FILE_OPEN_ERROR = 1
+        FILE_READ_ERROR = 2
+        NO_BATCH = 3
+        GUI_REFUSE_FILETRANSFER = 4
+        INVALID_TYPE = 5
+        NO_AUTHORITY = 6
+        UNKNOWN_ERROR = 7
+        BAD_DATA_FORMAT = 8
+        HEADER_NOT_ALLOWED = 9
+        SEPARATOR_NOT_ALLOWED = 10
+        HEADER_TOO_LONG = 11
+        UNKNOWN_DP_ERROR = 12
+        ACCESS_DENIED = 13
+        DP_OUT_OF_MEMORY = 14
+        DISK_FULL = 15
+        DP_TIMEOUT = 16
+        NOT_SUPPORTED_BY_GUI = 17
+        ERROR_NO_GUI = 18
+        Others = 19.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
     lv_Lines = Lines( lt_FileData ).
     Loop At lt_FileData Into lv_Str.
@@ -388,7 +617,34 @@ Class ZCL_AUTOIT Implementation.
       Changing
         DATA_TAB = lt_FileData
       Exceptions
-        Others = 1.
+        FILE_WRITE_ERROR = 1
+        NO_BATCH = 2
+        GUI_REFUSE_FILETRANSFER = 3
+        INVALID_TYPE = 4
+        NO_AUTHORITY = 5
+        UNKNOWN_ERROR = 6
+        HEADER_NOT_ALLOWED = 7
+        SEPARATOR_NOT_ALLOWED = 8
+        FILESIZE_NOT_ALLOWED = 9
+        HEADER_TOO_LONG = 10
+        DP_ERROR_CREATE = 11
+        DP_ERROR_SEND = 12
+        DP_ERROR_WRITE = 13
+        UNKNOWN_DP_ERROR = 14
+        ACCESS_DENIED = 15
+        DP_OUT_OF_MEMORY = 16
+        DISK_FULL = 17
+        DP_TIMEOUT = 18
+        FILE_NOT_FOUND = 19
+        DATAPROVIDER_EXCEPTION = 20
+        CONTROL_FLUSH_ERROR = 21
+        NOT_SUPPORTED_BY_GUI = 22
+        ERROR_NO_GUI = 23
+        Others = 24.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
@@ -410,7 +666,34 @@ Class ZCL_AUTOIT Implementation.
       Changing
         DATA_TAB = lt_FileData
       Exceptions
-        Others = 1.
+        FILE_WRITE_ERROR = 1
+        NO_BATCH = 2
+        GUI_REFUSE_FILETRANSFER = 3
+        INVALID_TYPE = 4
+        NO_AUTHORITY = 5
+        UNKNOWN_ERROR = 6
+        HEADER_NOT_ALLOWED = 7
+        SEPARATOR_NOT_ALLOWED = 8
+        FILESIZE_NOT_ALLOWED = 9
+        HEADER_TOO_LONG = 10
+        DP_ERROR_CREATE = 11
+        DP_ERROR_SEND = 12
+        DP_ERROR_WRITE = 13
+        UNKNOWN_DP_ERROR = 14
+        ACCESS_DENIED = 15
+        DP_OUT_OF_MEMORY = 16
+        DISK_FULL = 17
+        DP_TIMEOUT = 18
+        FILE_NOT_FOUND = 19
+        DATAPROVIDER_EXCEPTION = 20
+        CONTROL_FLUSH_ERROR = 21
+        NOT_SUPPORTED_BY_GUI = 22
+        ERROR_NO_GUI = 23
+        Others = 24.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
@@ -423,14 +706,34 @@ Class ZCL_AUTOIT Implementation.
       Changing
         RC = r_Success
       Exceptions
-        Others = 1.
+        FILE_DELETE_FAILED = 1
+        CNTL_ERROR = 2
+        ERROR_NO_GUI = 3
+        FILE_NOT_FOUND = 4
+        ACCESS_DENIED = 5
+        UNKNOWN_ERROR = 6
+        NOT_SUPPORTED_BY_GUI = 7
+        WRONG_PARAMETER = 8
+        Others = 9.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
 
   Method Flush."--------------------------------------------------------
 
-    Call Method CL_GUI_CFW=>Flush.
+    Call Method CL_GUI_CFW=>Flush
+      EXCEPTIONS
+        CNTL_SYSTEM_ERROR = 1
+        CNTL_ERROR = 2
+        Others = 3.
+
+    If sy-subrc <> 0.
+      Raise Error.
+    EndIf.
 
   EndMethod.
 
