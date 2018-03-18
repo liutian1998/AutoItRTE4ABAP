@@ -29,6 +29,9 @@
 
       Write: / lv_Str.
 
+      lo_AutoIt->DeleteFile( i_filename = lv_WorkDir && '\InputBox.au3' ).
+      lo_AutoIt->DeleteExistingRTE( ).
+
     Catch cx_Root.
       Write: / 'An error occured'.
     EndTry.
